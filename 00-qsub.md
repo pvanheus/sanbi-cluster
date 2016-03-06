@@ -41,7 +41,7 @@ so we can assume it exists on all nodes on the cluster. The data `myfile.txt` ca
 > HTTP request sent, awaiting response... 200 OK
 > Length: 1039 (1,0K) [text/plain]
 > Saving to: ‘myfile.txt’
->
+>   
 > 100%[=====================================================================================================>] 1 039       --.-K/s   in 0s
 >
 > 2016-03-06 11:33:47 (43,6 MB/s) - ‘myfile.txt’ saved [1039/1039]
@@ -90,5 +90,17 @@ There are two standard queues at SANBI:
 
 There are also queues available for specific research groups: *travers.q*, *junaid.q*, *h3a.q* and so forth.
 
-By default a job is allocated 2 GB of RAM and 1 CPU slot. The queueing system makes sure that you do not exceed your RAM allocation: if your job uses more than the RAM requested it will be terminated. The system has no way of policing CPU allocation: if you run a job using that runs in parallel or is multi-threaded and uses more than 1 CPU it will do so, even though the system *thinks* it is only using a single CPU. Later in this lesson we will discuss running jobs that
-use more than 1 CPU.
+By default a job is allocated 2 GB of RAM and 1 CPU slot. The queueing system makes sure that you do not exceed your RAM allocation: if your job uses more than the RAM requested it will be terminated. The system has no way of policing CPU allocation: if you run a job using that runs in parallel or is multi-threaded and uses more than 1 CPU it will do so, even though the system *thinks* it is only using a single CPU. Later in this lesson we will discuss running jobs that use more than 1 CPU.
+
+### Common qsub options
+
+The `qsub` command submits a job to the queue. It has a large number of command line options, the most commonly used of which are:
+
+*   **-q**: Specify the name of the queue. E.g. *-q long.q*
+*   **-wd**: Specify a working directory. E.g. *-wd /cip0/research/scratch/pvh*
+*   **-l**: Specify additional resources. E.g. *-l h_vmem=4G* specifies that your job needs 4 GB of RAM
+*   **-N**: Give your job a name. E.g. *-N myjob1*. This changes the names used for output files.
+
+The `-wd $(pwd)` option used in our previous `qsub` command specifies that the script should run using the
+current directory as the working directory (`$(pwd)` expands to the name of the current directory). For more info,
+read the manual page by running `man qsub`.

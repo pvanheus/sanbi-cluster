@@ -50,7 +50,7 @@ your `scratch` directory:
 ## Topics
 
 1.  [Running a script on the SANBI cluster](00-qsub.html)
-2.  [Files and Directories](01-filedir.html)
+2.  [Finding software on the cluster](01-finding-software.html)
 3.  [Creating Things](02-create.html)
 4.  [Pipes and Filters](03-pipefilter.html)
 5.  [Loops](04-loop.html)
