@@ -3,13 +3,13 @@
   <head>
     <meta charset="utf-8">
     <meta name="generator" content="pandoc">
-    <title>Software Carpentry: The Unix Shell</title>
+    <title>Learning how to use the SANBI computing environment</title>
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap.css" />
     <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap-theme.css" />
     <link rel="stylesheet" type="text/css" href="css/swc.css" />
-    <link rel="alternate" type="application/rss+xml" title="Software Carpentry Blog" href="http://software-carpentry.org/feed.xml"/>
+    <!--<link rel="alternate" type="application/rss+xml" title="Software Carpentry Blog" href="http://software-carpentry.org/feed.xml"/>-->
     <meta charset="UTF-8" />
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
@@ -20,41 +20,42 @@
     <div class="container card">
       <div class="banner">
         <a href="http://software-carpentry.org" title="Software Carpentry">
-          <img alt="Software Carpentry banner" src="img/software-carpentry-banner.png" />
+          <img alt="Software Carpentry banner" src="img/logo.png" />
         </a>
       </div>
       <article>
       <div class="row">
         <div class="col-md-10 col-md-offset-1">
-                    <h1 class="title">The Unix Shell</h1>
-          <p>The Unix shell has been around longer than most of its users have been alive. It has survived so long because it’s a power tool that allows people to do complex things with just a few keystrokes. More importantly, it helps them combine existing programs in new ways and automate repetitive tasks so that they don’t have to type the same things over and over again. Use of the shell is fundamental to using a wide range of other powerful tools and computing resources (including “high-performance computing” supercomputers). These lessons will start you on a path towards using these resources effectively.</p>
+                    <h1 class="title">Learning how to use the SANBI computing environment</h1>
+          <p>SANBI has a small but powerful cluster of computers that provide a High Powered Computing environment for our users.</p>
 <section class="prereq panel panel-warning">
 <div class="panel-heading">
 <h2><span class="glyphicon glyphicon-education"></span>Prerequisites</h2>
 </div>
 <div class="panel-body">
-<p>This lesson guides you through the basics of file systems and the shell. If you have stored files on a computer at all and recognize the word “file” and either “directory” or “folder” (two common words for the same thing), you’re ready for this lesson.</p>
-<p>If you’re already comfortable manipulating files and directories, searching for files with <code>grep</code> and <code>find</code>, and writing simple loops and scripts, you probably won’t learn much from this lesson.</p>
+<p>This lesson guides you through the basics of submitting and monitoring jobs on the SANBI cluster. If you have a working knowledge of the Linux/Unix shell, you’re ready for this lesson.</p>
+<p>If you know how to <code>qsub</code> scripts, you probably won’t learn a lot from this lesson.</p>
 </div>
 </section>
-<section class="getready panel panel-warning">
-<div class="panel-heading">
-<h2><span class="glyphicon glyphicon-check"></span>Getting ready</h2>
+<h2 id="the-sanbi-cluster">The SANBI cluster</h2>
+<p>The design of SANBI’s cluster has two intended purposes: users should be able to run jobs without caring (much) on which computer the job runs and users’ jobs should not interfere with each other.</p>
+<div class="figure">
+<img src="http://docs.wp.sanbi.ac.za/wp-content/uploads/sites/9/2014/11/cluster_design.svg" alt="SANBI cluster design" /><p class="caption">SANBI cluster design</p>
 </div>
-<div class="panel-body">
-<p>You need to download some files to follow this lesson:</p>
-<ol style="list-style-type: decimal">
-<li>Download <a href="./shell-novice-data.zip">shell-novice-data.zip</a> and move the file to your Desktop.</li>
-<li>Unzip/extract the file (ask your instructor if you need help with this step). You should end up with a new folder called data-shell on your Desktop.</li>
-<li>Open a terminal and type:</li>
-</ol>
-<pre class="input"><code>$ cd</code></pre>
-<p>In the lesson, you will find out how to access the data in this folder.</p>
-</div>
-</section>
+<p>Users log onto the <em>login node</em> named <strong>queue00</strong> using <em>ssh</em>. This machine is only available from inside SANBI. If you want to access it from outside SANBI you need to use our <em>VPN</em> or first ssh to <strong>gate.sanbi.ac.za</strong>.</p>
+<p>The cluster is managed by a machine called <strong>grid00</strong>. Users never log in here, and keeping this separate from <strong>queue00</strong> means that even if users crash <strong>queue00</strong> the cluster will keep running. The actual computing happens on machines named <strong>grid01</strong>, <strong>grid02</strong> and so forth. The Sun Grid Engine (SGE) software on <strong>grid00</strong> starts the jobs running on these machines, users never log into them directly.</p>
+<h2 id="the-sanbi-cip0-filesystem">The SANBI /cip0 filesystem</h2>
+<p>All our research data is stored in directories under <code>/cip0</code>. In general, no data should be stored in your home directory (<code>/usr/people/username</code>). On <code>/cip0</code> each user has a <code>scratch</code> directory and a <code>research</code> directory named <code>/cip0/research/username</code> and <code>/cip0/research/scratch/username</code>. All work should be done in subdirectories of the <code>scratch</code> directory and final results stored in the <code>research</code> directory. Make sure that you are now in your <code>scratch</code> directory:</p>
+<blockquote>
+<pre class="input"><code>$ id -un</code></pre>
+<pre class="output"><code>username</code></pre>
+<pre class="input"><code>$ cd /cip0/research/username
+$ pwd</code></pre>
+<pre class="output"><code>/cip0/research/username</code></pre>
+</blockquote>
 <h2 id="topics">Topics</h2>
 <ol style="list-style-type: decimal">
-<li><a href="00-intro.html">Introducing the Shell</a></li>
+<li><a href="00-qsub.html">Running a script on the SANBI cluster</a></li>
 <li><a href="01-filedir.html">Files and Directories</a></li>
 <li><a href="02-create.html">Creating Things</a></li>
 <li><a href="03-pipefilter.html">Pipes and Filters</a></li>

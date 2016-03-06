@@ -1,47 +1,55 @@
 ---
 layout: page
-title: The Unix Shell
+title: Learning how to use the SANBI computing environment
 ---
-The Unix shell has been around longer than most of its users have been alive.
-It has survived so long because it's a power tool
-that allows people to do complex things with just a few keystrokes.
-More importantly,
-it helps them combine existing programs in new ways
-and automate repetitive tasks
-so that they don't have to type the same things over and over again.
-Use of the shell is fundamental to using a wide range of other powerful tools 
-and computing resources (including "high-performance computing" supercomputers).
-These lessons will start you on a path towards using these resources effectively.
+SANBI has a small but powerful cluster of computers that provide a High Powered Computing
+environment for our users.
 
 > ## Prerequisites {.prereq}
 >
-> This lesson guides you through the basics of file systems and the
-> shell.  If you have stored files on a computer at all and recognize
-> the word “file” and either “directory” or “folder” (two common words
-> for the same thing), you're ready for this lesson.
+> This lesson guides you through the basics of submitting and monitoring
+> jobs on the SANBI cluster. If you have a working knowledge of the
+> Linux/Unix shell, you're ready for this lesson.
 >
-> If you're already comfortable manipulating files and directories,
-> searching for files with `grep` and `find`, and writing simple loops
-> and scripts, you probably won't learn much from this lesson.
+> If you know how to `qsub` scripts, you probably won't learn a lot
+> from this lesson.
 
-> ## Getting ready {.getready}
->
-> You need to download some files to follow this lesson:
-> 
-> 1. Download [shell-novice-data.zip](./shell-novice-data.zip) and move the file to your Desktop.
-> 2. Unzip/extract the file (ask your instructor if you need help with this step). You should end up with a new folder called data-shell on your Desktop.
-> 3. Open a terminal and type:
->
+## The SANBI cluster
+
+The design of SANBI's cluster has two intended purposes: users should be able to run jobs without caring (much) on which computer the job runs and users' jobs should not interfere with each other.
+
+![SANBI cluster design](http://docs.wp.sanbi.ac.za/wp-content/uploads/sites/9/2014/11/cluster_design.svg)
+
+Users log onto the *login node* named **queue00** using *ssh*. This machine is only available from inside SANBI. If you want to access it from outside SANBI you need to use our *VPN* or first ssh to **gate.sanbi.ac.za**.
+
+The cluster is managed by a machine called **grid00**. Users never log in here, and keeping this separate from **queue00** means that even if users crash **queue00** the cluster will keep running. The actual computing happens on machines named **grid01**, **grid02** and so forth. The Sun Grid Engine (SGE) software on **grid00** starts the jobs running on these machines, users never log into them directly.
+
+## The SANBI /cip0 filesystem
+
+All our research data is stored in directories under `/cip0`. In general, no data should be stored in your home
+directory (`/usr/people/username`). On `/cip0` each user has a `scratch` directory and a `research` directory named
+`/cip0/research/username` and `/cip0/research/scratch/username`. All work should be done in subdirectories of the
+`scratch` directory and final results stored in the `research` directory. Make sure that you are now in
+your `scratch` directory:
+
 > ~~~ {.input}
-> $ cd
+> $ id -un
 > ~~~
->
-> In the lesson, you will find out how to access the data in this folder.  
+> ~~~ {.output}
+> username
+> ~~~
+> ~~~ {.input}
+> $ cd /cip0/research/username
+> $ pwd
+> ~~~
+> ~~~ {.output}
+> /cip0/research/username
+> ~~~
 
 
 ## Topics
 
-1.  [Introducing the Shell](00-intro.html)
+1.  [Running a script on the SANBI cluster](00-qsub.html)
 2.  [Files and Directories](01-filedir.html)
 3.  [Creating Things](02-create.html)
 4.  [Pipes and Filters](03-pipefilter.html)
