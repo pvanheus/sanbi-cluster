@@ -27,16 +27,56 @@
       <div class="row">
         <div class="col-md-10 col-md-offset-1">
                     <h1 class="title">Running a script on the SANBI cluster</h1>
-          <h2 id="one-run-one-working-directory">One run, one working directory</h2>
-<p>Each analysis you do on the cluster should happen in its own working directory. Use directories to keep data organised and put a README file in each analysis directory to describe the data that is held there. Let’s create such a directory</p>
+          <h3 id="one-run-one-working-directory">One run, one working directory</h3>
+<p>Each analysis you do on the cluster should happen in its own working directory. Use directories to keep data organised and put a README file in each analysis directory to describe the data that is held there. Let’s create such a directory and start our work there:</p>
+<blockquote>
+<pre class="input"><code>$ cd /cip0/research/username
+$ mkdir cluster-demo
+$ cd cluster-demo
+pwd</code></pre>
+<pre class="output"><code>/cip0/research/username/cluster-demo</code></pre>
+</blockquote>
 <h3 id="shell-scripts-and-qsub">Shell scripts and qsub</h3>
 <p>To run a job on the cluster you need to create a shell script that specifies what you want to do. For example, this shell script counts the lines in a file called <em>myfile.txt</em>:</p>
-<pre><code>#!/bin/sh
+<blockquote>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="co">#!/bin/sh</span>
 
-wc -l myfile.txt</code></pre>
-<p>Assuming that this script is saved as <em>myscript.sh</em>, it can be run on the cluster using the following command:</p>
-<pre><code>qsub -cwd -q all.q myscript.sh</code></pre>
-<p>This will submit a job to the queue <em>all.q</em>. Then <em>grid00</em> picks up the job, checks if there are free resources to run the job and, if so, runs it. The output from the job will be written to two files, <strong>myscript.sh.eNNNN</strong> and <strong>myscript.sh.oNNNN</strong>. These files capture the output written to <em>stderr</em> and <em>stdout</em> respectively.</p>
+<span class="kw">wc</span> -l myfile.txt</code></pre>
+</blockquote>
+<p>For it to work we need the program <code>wc</code> and the data <code>myfile.txt</code>. The <code>wc</code> program is a standard Linux command so we can assume it exists on all nodes on the cluster. The data <code>myfile.txt</code> can be downloaded:</p>
+<blockquote>
+<pre class="input"><code>$ wget http://pvanheus.github.io/sanbi-cluster/data-cluster/myfile.txt</code></pre>
+<pre class="output"><code>--2016-03-06 11:33:47--  http://pvanheus.github.io/sanbi-cluster/data-cluster/myfile.txt
+Resolving pvanheus.github.io (pvanheus.github.io)... 185.31.18.133
+Connecting to pvanheus.github.io (pvanheus.github.io)|185.31.18.133|:80... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 1039 (1,0K) [text/plain]
+Saving to: ‘myfile.txt’
+
+100%[=====================================================================================================&gt;] 1 039       --.-K/s   in 0s
+
+2016-03-06 11:33:47 (43,6 MB/s) - ‘myfile.txt’ saved [1039/1039]</code></pre>
+</blockquote>
+<p>Using <code>nano</code> create this script as <code>myscript.sh</code>. It can be run on the cluster using the following command:</p>
+<blockquote>
+<pre class="input"><code>$ qsub -wd $(pwd) -q all.q myscript.sh</code></pre>
+<pre class="output"><code>Your job 7493681 (&quot;myscript.sh&quot;) has been submitted</code></pre>
+</blockquote>
+<p>This will submit a job to the queue <em>all.q</em>. Then <em>grid00</em> picks up the job, checks if there are free resources to run the job and, if so, runs it. The output from the job will be written to two files, <code>myscript.sh.eNNNN</code> and <code>myscript.sh.oNNNN</code>. These files capture the output written to the <em>stderr</em> and <em>stdout</em> streams respectively. Let us examine the output we got from running <code>myscript.sh</code>.</p>
+<blockquote>
+<pre class="input"><code>ls -l</code></pre>
+<pre class="output"><code>total 12
+-rw-r--r-- 1 pvh messagebus 1039 Mar  6 11:22 myfile.txt
+-rw-r--r-- 1 pvh messagebus   28 Mar  6 12:02 myscript.sh
+-rw-r--r-- 1 pvh messagebus    0 Mar  6 12:03 myscript.sh.e7493681
+-rw-r--r-- 1 pvh messagebus   14 Mar  6 12:03 myscript.sh.o7493681</code></pre>
+</blockquote>
+<p>From this output we can see that <code>myscript.sh.e7493681</code> has zero size output, which is what we would expect if the command ran with no errors (and thus nothing was written to <em>stderr</em>). The output of the script is in <code>myscript.sh.o7493681</code> which contains:</p>
+<blockquote>
+<pre class="input"><code>$ cat myscript.sh.o7493681</code></pre>
+<pre class="output"><code>27 myfile.txt</code></pre>
+</blockquote>
+<p>You might recognise this as the output from <code>wc -l</code> and it is the same output you would receive if you ran <code>wc -l myfile.txt</code> on the command line.</p>
 <h3 id="sanbi-queue-names-and-resources">SANBI queue names and resources</h3>
 <p>There are two standard queues at SANBI:</p>
 <ul>
@@ -44,7 +84,7 @@ wc -l myfile.txt</code></pre>
 <li><strong>long.q</strong>: The queue for long running jobs. Fewer CPUs are available via long.q, to ensure that if a user has a small job to run they will find a CPU free.</li>
 </ul>
 <p>There are also queues available for specific research groups: <em>travers.q</em>, <em>junaid.q</em>, <em>h3a.q</em> and so forth.</p>
-<p>By default a job is allocated 2 GB of RAM and 1 CPU slot. The queueing system makes sure that you do not exceed your RAM allocation: if your job uses more than the RAM requested it will be terminated. The system has no way of policing CPU allocation: if you run a job using that runs in parallel and uses more than 1 CPU it will do so, even though the system <em>thinks</em> it is only using a single CPU. There is a section below on running parallel jobs.</p>
+<p>By default a job is allocated 2 GB of RAM and 1 CPU slot. The queueing system makes sure that you do not exceed your RAM allocation: if your job uses more than the RAM requested it will be terminated. The system has no way of policing CPU allocation: if you run a job using that runs in parallel or is multi-threaded and uses more than 1 CPU it will do so, even though the system <em>thinks</em> it is only using a single CPU. Later in this lesson we will discuss running jobs that use more than 1 CPU.</p>
         </div>
       </div>
       </article>
