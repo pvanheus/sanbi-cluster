@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="pandoc">
+    <title>Running a script on the SANBI cluster</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="css/swc.css" />
+    <!--<link rel="alternate" type="application/rss+xml" title="Software Carpentry Blog" href="http://software-carpentry.org/feed.xml"/>-->
+    <meta charset="UTF-8" />
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body class="lesson">
+    <div class="container card">
+      <div class="banner">
+        <a href="http://software-carpentry.org" title="Software Carpentry">
+          <img alt="Software Carpentry banner" src="img/logo.png" />
+        </a>
+      </div>
+      <article>
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+                    <h1 class="title">Running a script on the SANBI cluster</h1>
+          <h2 id="one-run-one-working-directory">One run, one working directory</h2>
+<p>Each analysis you do on the cluster should happen in its own working directory. Use directories to keep data organised and put a README file in each analysis directory to describe the data that is held there. Let’s create such a directory</p>
+<h3 id="shell-scripts-and-qsub">Shell scripts and qsub</h3>
+<p>To run a job on the cluster you need to create a shell script that specifies what you want to do. For example, this shell script counts the lines in a file called <em>myfile.txt</em>:</p>
+<pre><code>#!/bin/sh
+
+wc -l myfile.txt</code></pre>
+<p>Assuming that this script is saved as <em>myscript.sh</em>, it can be run on the cluster using the following command:</p>
+<pre><code>qsub -cwd -q all.q myscript.sh</code></pre>
+<p>This will submit a job to the queue <em>all.q</em>. Then <em>grid00</em> picks up the job, checks if there are free resources to run the job and, if so, runs it. The output from the job will be written to two files, <strong>myscript.sh.eNNNN</strong> and <strong>myscript.sh.oNNNN</strong>. These files capture the output written to <em>stderr</em> and <em>stdout</em> respectively.</p>
+<h3 id="sanbi-queue-names-and-resources">SANBI queue names and resources</h3>
+<p>There are two standard queues at SANBI:</p>
+<ul>
+<li><strong>all.q</strong>: The default queue. Jobs in this queue are limited to 8 hours of running time.</li>
+<li><strong>long.q</strong>: The queue for long running jobs. Fewer CPUs are available via long.q, to ensure that if a user has a small job to run they will find a CPU free.</li>
+</ul>
+<p>There are also queues available for specific research groups: <em>travers.q</em>, <em>junaid.q</em>, <em>h3a.q</em> and so forth.</p>
+<p>By default a job is allocated 2 GB of RAM and 1 CPU slot. The queueing system makes sure that you do not exceed your RAM allocation: if your job uses more than the RAM requested it will be terminated. The system has no way of policing CPU allocation: if you run a job using that runs in parallel and uses more than 1 CPU it will do so, even though the system <em>thinks</em> it is only using a single CPU. There is a section below on running parallel jobs.</p>
+        </div>
+      </div>
+      </article>
+      <div class="footer">
+        <a class="label swc-blue-bg" href="http://software-carpentry.org">Software Carpentry</a>
+        <a class="label swc-blue-bg" href="https://github.com/swcarpentry/shell-novice">Source</a>
+        <a class="label swc-blue-bg" href="mailto:admin@software-carpentry.org">Contact</a>
+        <a class="label swc-blue-bg" href="LICENSE.html">License</a>
+      </div>
+    </div>
+    <!-- Javascript placed at the end of the document so the pages load faster -->
+    <script src="http://software-carpentry.org/v5/js/jquery-1.9.1.min.js"></script>
+    <script src="css/bootstrap/bootstrap-js/bootstrap.js"></script>
+  </body>
+</html>
