@@ -131,8 +131,15 @@ and it uses `module add blastplus` to add the path to the `blastn` program. It a
 > . /etc/profile.d/module.sh
 > ~~~
 
-which is necessary to import the *Environment Modules* packages and make the `module` command work. Use
-an editor (such as `nano`) to save the script as `run_blast.sh` and submit it to the cluster:
+which is necessary to import the *Environment Modules* packages and make the `module` command work. You can download this script from [this link](http://pvanheus.github.io/sanbi-cluster/data-cluster/run_blast.sh) using `wget`:
+
+> ~~~ {.bash}
+> $ wget http://pvanheus.github.io/sanbi-cluster/data-cluster/run_blast.sh
+> ~~~
+
+or use an editor (such as `nano`) to save the script as `run_blast.sh`.
+
+Submit it to the cluster:
 
 > ~~~ {.input}
 > qsub -wd $(pwd) run_blast.sh

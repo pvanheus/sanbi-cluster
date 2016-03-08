@@ -101,7 +101,12 @@ blastn -db /cip0/db/ncbi/nt/default/nt -max_target_seqs 1 -outfmt $BLAST_OPTS \
 <blockquote>
 <pre class="input"><code>. /etc/profile.d/module.sh</code></pre>
 </blockquote>
-<p>which is necessary to import the <em>Environment Modules</em> packages and make the <code>module</code> command work. Use an editor (such as <code>nano</code>) to save the script as <code>run_blast.sh</code> and submit it to the cluster:</p>
+<p>which is necessary to import the <em>Environment Modules</em> packages and make the <code>module</code> command work. You can download this script from <a href="http://pvanheus.github.io/sanbi-cluster/data-cluster/run_blast.sh">this link</a> using <code>wget</code>:</p>
+<blockquote>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">wget</span> http://pvanheus.github.io/sanbi-cluster/data-cluster/run_blast.sh</code></pre>
+</blockquote>
+<p>or use an editor (such as <code>nano</code>) to save the script as <code>run_blast.sh</code>.</p>
+<p>Submit it to the cluster:</p>
 <blockquote>
 <pre class="input"><code>qsub -wd $(pwd) run_blast.sh</code></pre>
 </blockquote>
