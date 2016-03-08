@@ -57,6 +57,17 @@ your `scratch` directory:
 6.  [Shell Scripts](05-script.html)
 7.  [Finding Things](06-find.html) -->
 
+## LO summary
+
+1.  Be able to create a script and run it on the SANBI cluster
+2.  Be able to find software on the SANBI cluster
+3.  Be able to use 'module add' within a script
+4.  Be able to specify resource requirements
+5.  Be able to monitor job status
+6.  Be able to kill jobs using qdel
+7.  Be able to find the standard and error output of the job
+8.  Be able to move data to and from the cluster using scp
+
 <!-- ## Other Resources
 
 *   [Reference](reference.html)
