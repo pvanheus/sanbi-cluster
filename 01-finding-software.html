@@ -33,10 +33,117 @@
 <p>To solve this problem we have <em><a href="http://modules.sourceforge.net/">Environment Modules</a></em>. This is software that configures the shell with correct settings for a given program.</p>
 <p>When you log into the SANBI cluster head node, <em>queue00</em>, the <em>Environment Modules</em> commands are automatically loaded for you. Let’s use one:</p>
 <blockquote>
-<pre class="input"><code>$ module load blastplus
+<pre class="input"><code>$ module add blastplus
 $ which blastn</code></pre>
 <pre class="output"><code>/cip0/software/x86_64/ncbi-blast-2.2.31+/bin/blastn</code></pre>
 </blockquote>
+<p>You can see which packages you have settings loaded with:</p>
+<blockquote>
+<pre class="input"><code>$ module list</code></pre>
+<pre class="output"><code>Currently Loaded Modulefiles:
+  1) blastplus/default</code></pre>
+</blockquote>
+<p>The <code>blastn</code> program is part of the <em>BLAST+</em> package from <em>NCBI</em> and is a very commonly used tool to search for sequences by homology. As you can see from the output of the <code>which</code> command, it is install in <code>/cip0/software/x86_64/ncbi-blast-2.2.31+</code>. The <code>module add</code> command changed your <code>PATH</code> environment variable by adding the path to <code>blastn</code>. To see what is being added use the <code>module show</code> command:</p>
+<blockquote>
+<pre class="input"><code>$ module show blastplus</code></pre>
+<pre class="output"><code>-------------------------------------------------------------------
+/cip0/software/modules/modulefiles/blastplus/default:
+
+append-path  PATH /cip0/software/x86_64/ncbi-blast-2.2.31+/bin 
+setenv       BLASTPLUS_HOME /cip0/software/x86_64/ncbi-blast-2.2.31+ 
+-------------------------------------------------------------------</code></pre>
+</blockquote>
+<p>The <code>setenv</code> commands sets an environment variable. This is useful if the package directories contain, for example, data that might be useful for your analysis.</p>
+<h3 id="exploring-the-sanbi-software-collection">Exploring the SANBI software collection</h3>
+<p>The SANBI cluster has more than 150 software packages installed. To list what is available use <code>module avail</code>:</p>
+<blockquote>
+<pre class="input"><code>$ module avail 2&gt;&amp;1 |more</code></pre>
+<pre class="output"><code>----------------------- /cip0/software/modules/versions ------------------------
+3.2.9
+
+----------- /cip0/software/x86_64/modules/Modules/3.2.9/modulefiles ------------
+dot         module-cvs  module-info modules     null        use.own
+
+---------------------- /cip0/software/modules/modulefiles ----------------------
+FastQC/0.10.1
+FastQC/0.11.2
+FastQC/0.11.4
+FastQC/default
+R/R-3.0.1
+R/R-3.1.1
+...</code></pre>
+</blockquote>
+<p>This output lists many packages and the versions that are available. Because the output is written to <code>stderr</code> and more than one screen, the <code>2&gt;&amp;1</code> and <code>| more</code> directs the output to the <code>more</code> pager program, It is probably more info than you need, so you can search for packages using <code>module avail</code>:</p>
+<blockquote>
+<pre class="input"><code>$ module avail velvet</code></pre>
+<pre class="output"><code>--------------------- /cip0/software/modules/modulefiles -----------------------------------
+velvet/velvet-1.2.03          velvet/velvet-1.2.10(default)
+velvet/velvet-1.2.06          velvet/velvet-1.2.10-big-long</code></pre>
+</blockquote>
+<p>This searches for all packages matching <em>velvet</em>.</p>
+<h3 id="using-environment-modules-in-your-scripts">Using Environment Modules in your scripts</h3>
+<p>Since most scripts that you will run on the cluster use packages that are made available using <em>Environment Modules</em> you need to include <code>module add</code> commands in your scripts.</p>
+<p>As an example, let’s use <code>blastn</code> to match some data against the NCBI non-redundant nucleotides (<em>nr</em>) database. We don’t know what species the sequences in our sample originated, so we’ll include some options to display the species that our query matches in the BLAST output. The script is:</p>
+<blockquote>
+<pre class="input"><code>#!/bin/sh
+
+. /etc/profile.d/module.sh
+module add blastplus
+
+QUERY=/cip0/research/projects/cluster_demo/sample.fa
+BLAST_OPTS=&#39;6 qseqid sseqid evalue bitscore sgi sacc staxids sscinames scomnames stitle&#39;
+BLASTDB=/cip0/db/ncbi/nt/default
+export BLASTDB
+blastn -db /cip0/db/ncbi/nt/default/nt -max_target_seqs 1 -outfmt $BLAST_OPTS \
+  -evalue &quot;1e-30&quot; -query $QUERY -out blast_results.txt</code></pre>
+</blockquote>
+<p>and it uses <code>module add blastplus</code> to add the path to the <code>blastn</code> program. It also includes the line:</p>
+<blockquote>
+<pre class="input"><code>. /etc/profile.d/module.sh</code></pre>
+</blockquote>
+<p>which is necessary to import the <em>Environment Modules</em> packages and make the <code>module</code> command work. Use an editor (such as <code>nano</code>) to save the script as <code>run_blast.sh</code> and submit it to the cluster:</p>
+<blockquote>
+<pre class="input"><code>qsub -wd $(pwd) run_blast.sh</code></pre>
+</blockquote>
+<p>This should run for about 12 minutes and when its done you can look in the <code>blast_results.txt</code> file to see what species the sample data is from.</p>
+<blockquote>
+<pre class="input"><code>more blast_results.txt</code></pre>
+</blockquote>
+<h3 id="environment-modules-summarised">Environment Modules summarised</h3>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Command</th>
+<th align="left">Function</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><code>module add package</code></td>
+<td align="left">Add the settings for <code>package</code> to your environment</td>
+</tr>
+<tr class="even">
+<td align="left"><code>module avail</code></td>
+<td align="left">List available packages</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>module avail name</code></td>
+<td align="left">Search for packages named <code>name</code></td>
+</tr>
+<tr class="even">
+<td align="left"><code>module show package</code></td>
+<td align="left">Show what <code>module add package</code> would do</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>module list</code></td>
+<td align="left">Show which packages settings are currently loaded</td>
+</tr>
+<tr class="even">
+<td align="left"><code>module rm package</code></td>
+<td align="left">Remove the settings for <code>package</code> from your environment</td>
+</tr>
+</tbody>
+</table>
         </div>
       </div>
       </article>

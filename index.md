@@ -51,14 +51,14 @@ your `scratch` directory:
 
 1.  [Running a script on the SANBI cluster](00-qsub.html)
 2.  [Finding software on the cluster](01-finding-software.html)
-3.  [Creating Things](02-create.html)
+<!-- 3.  [Monitoring your jobs](02-monitoring.html)
 4.  [Pipes and Filters](03-pipefilter.html)
 5.  [Loops](04-loop.html)
 6.  [Shell Scripts](05-script.html)
-7.  [Finding Things](06-find.html)
+7.  [Finding Things](06-find.html) -->
 
-## Other Resources
+<!-- ## Other Resources
 
 *   [Reference](reference.html)
 *   [Discussion](discussion.html)
-*   [Instructor's Guide](instructors.html)
+*   [Instructor's Guide](instructors.html) -->
